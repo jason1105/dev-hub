@@ -3,948 +3,298 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dev Lab · Claude AI 驱动的个人开发工具集</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Noto+Sans+SC:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+  <title>Jason's Dev Hub</title>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --bg:            #0d1117;
-      --bg2:           #10161e;
-      --surface:       rgba(255,255,255,0.032);
-      --surface-hover: rgba(255,255,255,0.065);
-      --border:        rgba(255,255,255,0.07);
-      --border-hover:  rgba(255,255,255,0.2);
-      --text:          #e6edf3;
-      --text-muted:    rgba(230,237,243,0.45);
-      --text-dim:      rgba(230,237,243,0.28);
-      --accent:        #7c6af7;
+      --bg: #0d1117;
+      --surface: #161b22;
+      --border: #30363d;
+      --text: #e6edf3;
+      --muted: #8b949e;
+      --accent: #58a6ff;
+      --accent-hover: #79c0ff;
+      --btn-bg: #21262d;
+      --btn-hover: #30363d;
+      --green: #3fb950;
     }
 
-    html, body {
-      min-height: 100%;
+    body {
       background: var(--bg);
       color: var(--text);
-      font-family: 'Inter', 'Noto Sans SC', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
-      line-height: 1.6;
-      overflow-x: hidden;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+      min-height: 100vh;
+      padding: 2rem 1rem 4rem;
     }
 
-    /* ── Canvas starfield ── */
-    #starfield {
-      position: fixed;
-      inset: 0;
-      z-index: 0;
-      pointer-events: none;
-    }
-
-    /* ── Nebula glow ── */
-    .nebula {
-      position: fixed;
-      inset: 0;
-      z-index: 0;
-      pointer-events: none;
-      background:
-        radial-gradient(ellipse 65% 55% at 12% 20%,  rgba(124,106,247,0.15) 0%, transparent 65%),
-        radial-gradient(ellipse 50% 60% at 88% 80%,  rgba(6,182,212,0.10)   0%, transparent 65%),
-        radial-gradient(ellipse 40% 40% at 50% 0%,   rgba(99,102,241,0.12)  0%, transparent 60%),
-        radial-gradient(ellipse 30% 35% at 75% 20%,  rgba(236,72,153,0.07)  0%, transparent 55%);
-    }
-
-    /* ── Setup banner ── */
-    #setup-banner {
-      display: none;
-      position: fixed;
-      top: 0; left: 0; right: 0;
-      z-index: 300;
-      background: linear-gradient(90deg, #312e81, #4f46e5, #7c3aed, #4f46e5, #312e81);
-      background-size: 300% 100%;
-      animation: banner-slide 6s linear infinite;
-      padding: 0 1.5rem;
-      height: 48px;
-      display: none;
-      align-items: center;
-      justify-content: center;
-      gap: 1rem;
-      font-size: 0.84rem;
-      font-weight: 500;
-    }
-    #setup-banner.visible { display: flex; }
-
-    .banner-input-wrap {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      background: rgba(255,255,255,0.15);
-      border: 1px solid rgba(255,255,255,0.25);
-      border-radius: 8px;
-      padding: 0.2rem 0.6rem;
-    }
-    .banner-input-wrap input {
-      background: none;
-      border: none;
-      outline: none;
-      color: #fff;
-      font-size: 0.84rem;
-      font-family: 'SF Mono', 'Fira Code', monospace;
-      width: 140px;
-      font-weight: 600;
-    }
-    .banner-input-wrap input::placeholder { color: rgba(255,255,255,0.45); font-weight: 400; }
-    .banner-btn {
-      background: rgba(255,255,255,0.2);
-      border: 1px solid rgba(255,255,255,0.3);
-      color: #fff;
-      border-radius: 6px;
-      padding: 0.2rem 0.65rem;
-      font-size: 0.78rem;
-      font-weight: 700;
-      cursor: pointer;
-      transition: background 0.2s;
-    }
-    .banner-btn:hover { background: rgba(255,255,255,0.32); }
-
-    @keyframes banner-slide {
-      0%   { background-position: 0% 0%; }
-      100% { background-position: 300% 0%; }
-    }
-
-    /* ── Stats pill top-right ── */
-    .stats-bar {
-      position: fixed;
-      top: 0; right: 0;
-      z-index: 200;
-      padding: 0.6rem 1.2rem;
-      font-size: 0.72rem;
-      font-weight: 600;
-      letter-spacing: 0.04em;
-      color: var(--text-dim);
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
-    .stats-bar.pushed { top: 48px; }
-    .stats-dot { color: var(--accent); opacity: 0.6; }
-
-    /* ── Main layout ── */
-    .container {
-      position: relative;
-      z-index: 1;
-      max-width: 1140px;
-      margin: 0 auto;
-      padding: 0 2rem;
-    }
-
-    /* ── Hero ── */
     header {
-      padding: 7rem 0 3rem;
       text-align: center;
+      max-width: 800px;
+      margin: 0 auto 3rem;
+      padding: 2rem 0;
     }
 
-    .badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-      background: rgba(124,106,247,0.12);
-      border: 1px solid rgba(124,106,247,0.3);
-      color: #a89af9;
-      padding: 0.35rem 1rem;
-      border-radius: 100px;
-      font-size: 0.72rem;
-      font-weight: 700;
-      letter-spacing: 0.09em;
+    header .badge {
+      display: inline-block;
+      background: #388bfd1a;
+      border: 1px solid #388bfd66;
+      color: var(--accent);
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
       text-transform: uppercase;
-      margin-bottom: 2rem;
-      animation: fade-up 0.5s 0.1s ease both;
-    }
-    .badge-dot {
-      width: 6px; height: 6px;
-      border-radius: 50%;
-      background: #7c6af7;
-      box-shadow: 0 0 8px 2px rgba(124,106,247,0.7);
-      animation: pulse-dot 2.4s ease-in-out infinite;
-    }
-    @keyframes pulse-dot {
-      0%, 100% { transform: scale(1); opacity: 1; }
-      50%       { transform: scale(0.7); opacity: 0.5; }
+      padding: 0.25rem 0.75rem;
+      border-radius: 999px;
+      margin-bottom: 1rem;
     }
 
-    h1 {
-      font-size: clamp(3.6rem, 9vw, 7.5rem);
-      font-weight: 900;
-      letter-spacing: -0.045em;
-      line-height: 1;
-      background: linear-gradient(135deg,
-        #ffffff 0%,
-        #c4bbff 25%,
-        #818cf8 50%,
-        #38bdf8 80%,
-        #06b6d4 100%
-      );
+    header h1 {
+      font-size: clamp(1.8rem, 5vw, 3rem);
+      font-weight: 700;
+      background: linear-gradient(135deg, #e6edf3 0%, #58a6ff 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
-      margin-bottom: 1.4rem;
-      animation: fade-up 0.55s 0.2s ease both;
-      filter: drop-shadow(0 0 40px rgba(124,106,247,0.3));
+      margin-bottom: 0.75rem;
+      line-height: 1.2;
     }
 
-    .tagline {
-      font-size: clamp(1rem, 2.5vw, 1.18rem);
-      color: var(--text-muted);
-      font-weight: 400;
-      letter-spacing: 0.01em;
-      margin-bottom: 2rem;
-      animation: fade-up 0.55s 0.3s ease both;
-    }
-    .tagline em { font-style: normal; color: rgba(230,237,243,0.68); }
-
-    /* username pill / input */
-    #user-display {
-      animation: fade-up 0.55s 0.38s ease both;
-    }
-    .user-pill {
-      display: none;
-      align-items: center;
-      gap: 0.45rem;
-      margin: 0 auto;
-      width: fit-content;
-      color: #a89af9;
-      font-size: 0.88rem;
-      font-family: 'SF Mono', 'Fira Code', monospace;
-      padding: 0.42rem 1.1rem;
-      background: rgba(124,106,247,0.1);
-      border-radius: 10px;
-      border: 1px solid rgba(124,106,247,0.24);
-    }
-    .user-pill.visible { display: inline-flex; }
-    .user-pill-at { opacity: 0.5; }
-
-    /* ── Divider ── */
-    .divider {
-      position: relative;
-      width: 100%;
-      height: 1px;
-      background: linear-gradient(90deg, transparent 0%, rgba(124,106,247,0.35) 30%, rgba(56,189,248,0.35) 70%, transparent 100%);
-      margin: 3rem 0;
-      animation: fade-up 0.5s 0.5s ease both;
-    }
-    .divider::after {
-      content: '';
-      position: absolute;
-      top: -2px; left: 50%; transform: translateX(-50%);
-      width: 6px; height: 6px;
-      border-radius: 50%;
-      background: var(--accent);
-      box-shadow: 0 0 10px 4px rgba(124,106,247,0.5);
+    header p {
+      color: var(--muted);
+      font-size: 1.05rem;
     }
 
-    /* ── Grid ── */
     .grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      gap: 1.3rem;
-      padding-bottom: 1rem;
-    }
-    /* last 2 cards centered in last row */
-    .grid-last-row {
-      grid-column: 1 / -1;
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 1.3rem;
-    }
-    .grid-last-row .card:first-child { grid-column: 2; }
-    .grid-last-row .card:last-child  { grid-column: 3; }
-
-    @media (max-width: 900px) {
-      .grid { grid-template-columns: repeat(2, 1fr); }
-      .grid-last-row { grid-template-columns: repeat(2, 1fr); }
-      .grid-last-row .card:first-child { grid-column: 1; }
-      .grid-last-row .card:last-child  { grid-column: 2; }
-    }
-    @media (max-width: 580px) {
-      .grid { grid-template-columns: 1fr; }
-      .grid-last-row { grid-template-columns: 1fr; }
-      .grid-last-row .card:first-child { grid-column: 1; }
-      .grid-last-row .card:last-child  { grid-column: 1; }
+      gap: 1.25rem;
+      max-width: 1100px;
+      margin: 0 auto;
     }
 
-    /* ── Card ── */
+    @media (max-width: 900px) { .grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 560px) { .grid { grid-template-columns: 1fr; } }
+
     .card {
-      position: relative;
       background: var(--surface);
       border: 1px solid var(--border);
-      border-radius: 20px;
-      padding: 1.7rem 1.7rem 1.5rem;
-      overflow: hidden;
-      text-decoration: none;
-      color: inherit;
+      border-radius: 12px;
+      padding: 1.5rem;
       display: flex;
       flex-direction: column;
-      gap: 0;
-      transition:
-        transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1),
-        border-color 0.28s ease,
-        box-shadow 0.32s ease,
-        background 0.28s ease;
-      animation: fade-up 0.55s ease both;
-    }
-
-    /* Top accent bar */
-    .card-bar {
-      position: absolute;
-      top: 0; left: 0; right: 0;
-      height: 2px;
-      border-radius: 20px 20px 0 0;
-      opacity: 0.7;
-      transition: opacity 0.3s ease, height 0.25s ease;
-    }
-
-    /* Glow overlay */
-    .card-glow {
-      position: absolute;
-      inset: 0;
-      border-radius: 20px;
-      opacity: 0;
-      transition: opacity 0.35s ease;
-      pointer-events: none;
+      gap: 0.75rem;
+      transition: border-color 0.2s, transform 0.2s, box-shadow 0.2s;
     }
 
     .card:hover {
-      transform: translateY(-8px) scale(1.015);
-      border-color: var(--border-hover);
-      background: var(--surface-hover);
-    }
-    .card:hover .card-bar  { opacity: 1; height: 3px; }
-    .card:hover .card-glow { opacity: 1; }
-    .card:hover .card-icon { transform: scale(1.14) rotate(-6deg); }
-
-    /* Card header row */
-    .card-head {
-      display: flex;
-      align-items: flex-start;
-      justify-content: space-between;
-      margin-bottom: 1.1rem;
+      border-color: var(--accent);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(88, 166, 255, 0.08);
     }
 
-    .card-icon {
-      width: 50px; height: 50px;
-      border-radius: 14px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.5rem;
-      box-shadow: 0 6px 20px rgba(0,0,0,0.4);
-      transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
-      flex-shrink: 0;
-    }
+    .card-icon { font-size: 2rem; line-height: 1; }
 
-    .card-names {
-      flex: 1;
-      min-width: 0;
-      padding-left: 0.9rem;
-    }
-
-    .card-name-cn {
+    .card-name {
       font-size: 1.05rem;
-      font-weight: 700;
-      letter-spacing: -0.01em;
+      font-weight: 600;
       color: var(--text);
-      line-height: 1.25;
-      font-family: 'Noto Sans SC', 'Inter', sans-serif;
     }
-    .card-name-en {
-      font-size: 0.72rem;
-      font-weight: 500;
-      letter-spacing: 0.02em;
-      color: var(--text-dim);
-      margin-top: 0.15rem;
-      font-family: 'SF Mono', 'Fira Code', monospace;
+
+    .card-slug {
+      font-size: 0.75rem;
+      color: var(--muted);
+      font-family: "SFMono-Regular", Consolas, monospace;
     }
 
     .card-desc {
-      font-size: 0.83rem;
-      color: var(--text-muted);
-      line-height: 1.65;
-      margin-bottom: 1.3rem;
+      font-size: 0.875rem;
+      color: var(--muted);
+      line-height: 1.5;
       flex: 1;
     }
 
-    /* Buttons row */
     .card-actions {
       display: flex;
-      gap: 0.55rem;
+      gap: 0.5rem;
+      flex-wrap: wrap;
       margin-top: auto;
     }
 
     .btn {
-      flex: 1;
       display: inline-flex;
       align-items: center;
-      justify-content: center;
-      gap: 0.32rem;
-      padding: 0.42rem 0.7rem;
-      border-radius: 9px;
-      font-size: 0.74rem;
-      font-weight: 600;
-      letter-spacing: 0.02em;
+      gap: 0.35rem;
+      padding: 0.4rem 0.85rem;
+      border-radius: 6px;
+      font-size: 0.8rem;
+      font-weight: 500;
       text-decoration: none;
-      transition: background 0.2s ease, transform 0.18s ease, box-shadow 0.2s ease;
+      border: 1px solid var(--border);
+      background: var(--btn-bg);
+      color: var(--text);
+      transition: background 0.15s, border-color 0.15s, color 0.15s;
       cursor: pointer;
-      border: 1px solid transparent;
-    }
-    .btn:hover { transform: translateY(-1px); }
-
-    .btn-pages {
-      background: rgba(255,255,255,0.07);
-      border-color: rgba(255,255,255,0.12);
-      color: var(--text);
-    }
-    .btn-pages:hover {
-      background: rgba(255,255,255,0.13);
-      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+      white-space: nowrap;
     }
 
-    .btn-repo {
-      background: rgba(255,255,255,0.04);
-      border-color: rgba(255,255,255,0.08);
-      color: var(--text-muted);
-    }
-    .btn-repo:hover {
-      background: rgba(255,255,255,0.08);
-      color: var(--text);
+    .btn:hover { background: var(--btn-hover); border-color: #8b949e; }
+
+    .btn-primary {
+      background: #1f6feb;
+      border-color: #388bfd66;
+      color: #fff;
     }
 
-    /* ── Per-card accent colors ── */
-    /* 1: purple-indigo */
-    .c1 .card-bar  { background: linear-gradient(90deg, #4f46e5, #7c3aed); }
-    .c1 .card-glow { background: radial-gradient(ellipse 80% 60% at 10% 10%, rgba(79,70,229,0.18) 0%, transparent 70%); }
-    .c1 .card-icon { background: linear-gradient(135deg, #4f46e5, #7c3aed); }
-    .c1:hover      { box-shadow: 0 20px 60px rgba(0,0,0,0.5), 0 0 0 1px rgba(79,70,229,0.4), inset 0 1px 0 rgba(255,255,255,0.06); }
-    .c1 .btn-pages { color: #a5b4fc; border-color: rgba(99,102,241,0.35); }
-    .c1 .btn-pages:hover { background: rgba(99,102,241,0.2); }
+    .btn-primary:hover { background: #388bfd; border-color: var(--accent); }
 
-    /* 2: teal-emerald */
-    .c2 .card-bar  { background: linear-gradient(90deg, #059669, #0d9488); }
-    .c2 .card-glow { background: radial-gradient(ellipse 80% 60% at 10% 10%, rgba(5,150,105,0.15) 0%, transparent 70%); }
-    .c2 .card-icon { background: linear-gradient(135deg, #047857, #0d9488); }
-    .c2:hover      { box-shadow: 0 20px 60px rgba(0,0,0,0.5), 0 0 0 1px rgba(5,150,105,0.4), inset 0 1px 0 rgba(255,255,255,0.06); }
-    .c2 .btn-pages { color: #6ee7b7; border-color: rgba(16,185,129,0.35); }
-    .c2 .btn-pages:hover { background: rgba(16,185,129,0.18); }
-
-    /* 3: orange-red */
-    .c3 .card-bar  { background: linear-gradient(90deg, #ea580c, #dc2626); }
-    .c3 .card-glow { background: radial-gradient(ellipse 80% 60% at 10% 10%, rgba(234,88,12,0.14) 0%, transparent 70%); }
-    .c3 .card-icon { background: linear-gradient(135deg, #c2410c, #b91c1c); }
-    .c3:hover      { box-shadow: 0 20px 60px rgba(0,0,0,0.5), 0 0 0 1px rgba(234,88,12,0.4), inset 0 1px 0 rgba(255,255,255,0.06); }
-    .c3 .btn-pages { color: #fdba74; border-color: rgba(249,115,22,0.35); }
-    .c3 .btn-pages:hover { background: rgba(249,115,22,0.18); }
-
-    /* 4: violet-pink */
-    .c4 .card-bar  { background: linear-gradient(90deg, #7c3aed, #be185d); }
-    .c4 .card-glow { background: radial-gradient(ellipse 80% 60% at 10% 10%, rgba(124,58,237,0.15) 0%, transparent 70%); }
-    .c4 .card-icon { background: linear-gradient(135deg, #6d28d9, #9d174d); }
-    .c4:hover      { box-shadow: 0 20px 60px rgba(0,0,0,0.5), 0 0 0 1px rgba(124,58,237,0.4), inset 0 1px 0 rgba(255,255,255,0.06); }
-    .c4 .btn-pages { color: #d8b4fe; border-color: rgba(168,85,247,0.35); }
-    .c4 .btn-pages:hover { background: rgba(168,85,247,0.18); }
-
-    /* 5: rose-amber */
-    .c5 .card-bar  { background: linear-gradient(90deg, #f43f5e, #f59e0b); }
-    .c5 .card-glow { background: radial-gradient(ellipse 80% 60% at 10% 10%, rgba(244,63,94,0.14) 0%, transparent 70%); }
-    .c5 .card-icon { background: linear-gradient(135deg, #e11d48, #d97706); }
-    .c5:hover      { box-shadow: 0 20px 60px rgba(0,0,0,0.5), 0 0 0 1px rgba(244,63,94,0.4), inset 0 1px 0 rgba(255,255,255,0.06); }
-    .c5 .btn-pages { color: #fda4af; border-color: rgba(251,113,133,0.35); }
-    .c5 .btn-pages:hover { background: rgba(251,113,133,0.18); }
-
-    /* 6: blue-cyan */
-    .c6 .card-bar  { background: linear-gradient(90deg, #2563eb, #0891b2); }
-    .c6 .card-glow { background: radial-gradient(ellipse 80% 60% at 10% 10%, rgba(37,99,235,0.15) 0%, transparent 70%); }
-    .c6 .card-icon { background: linear-gradient(135deg, #1d4ed8, #0e7490); }
-    .c6:hover      { box-shadow: 0 20px 60px rgba(0,0,0,0.5), 0 0 0 1px rgba(37,99,235,0.4), inset 0 1px 0 rgba(255,255,255,0.06); }
-    .c6 .btn-pages { color: #7dd3fc; border-color: rgba(14,165,233,0.35); }
-    .c6 .btn-pages:hover { background: rgba(14,165,233,0.18); }
-
-    /* 7: fuchsia-violet */
-    .c7 .card-bar  { background: linear-gradient(90deg, #c026d3, #7c3aed); }
-    .c7 .card-glow { background: radial-gradient(ellipse 80% 60% at 10% 10%, rgba(192,38,211,0.14) 0%, transparent 70%); }
-    .c7 .card-icon { background: linear-gradient(135deg, #a21caf, #6d28d9); }
-    .c7:hover      { box-shadow: 0 20px 60px rgba(0,0,0,0.5), 0 0 0 1px rgba(192,38,211,0.4), inset 0 1px 0 rgba(255,255,255,0.06); }
-    .c7 .btn-pages { color: #f0abfc; border-color: rgba(232,121,249,0.35); }
-    .c7 .btn-pages:hover { background: rgba(232,121,249,0.18); }
-
-    /* 8: indigo-sky */
-    .c8 .card-bar  { background: linear-gradient(90deg, #4338ca, #0369a1); }
-    .c8 .card-glow { background: radial-gradient(ellipse 80% 60% at 10% 10%, rgba(67,56,202,0.15) 0%, transparent 70%); }
-    .c8 .card-icon { background: linear-gradient(135deg, #3730a3, #075985); }
-    .c8:hover      { box-shadow: 0 20px 60px rgba(0,0,0,0.5), 0 0 0 1px rgba(67,56,202,0.4), inset 0 1px 0 rgba(255,255,255,0.06); }
-    .c8 .btn-pages { color: #a5b4fc; border-color: rgba(99,102,241,0.35); }
-    .c8 .btn-pages:hover { background: rgba(99,102,241,0.18); }
-
-    /* 9: lime-green */
-    .c9 .card-bar  { background: linear-gradient(90deg, #65a30d, #15803d); }
-    .c9 .card-glow { background: radial-gradient(ellipse 80% 60% at 10% 10%, rgba(101,163,13,0.14) 0%, transparent 70%); }
-    .c9 .card-icon { background: linear-gradient(135deg, #4d7c0f, #166534); }
-    .c9:hover      { box-shadow: 0 20px 60px rgba(0,0,0,0.5), 0 0 0 1px rgba(101,163,13,0.4), inset 0 1px 0 rgba(255,255,255,0.06); }
-    .c9 .btn-pages { color: #bef264; border-color: rgba(163,230,53,0.35); }
-    .c9 .btn-pages:hover { background: rgba(163,230,53,0.15); }
-
-    /* 10: yellow-orange */
-    .c10 .card-bar  { background: linear-gradient(90deg, #d97706, #ea580c); }
-    .c10 .card-glow { background: radial-gradient(ellipse 80% 60% at 10% 10%, rgba(217,119,6,0.14) 0%, transparent 70%); }
-    .c10 .card-icon { background: linear-gradient(135deg, #b45309, #c2410c); }
-    .c10:hover      { box-shadow: 0 20px 60px rgba(0,0,0,0.5), 0 0 0 1px rgba(217,119,6,0.4), inset 0 1px 0 rgba(255,255,255,0.06); }
-    .c10 .btn-pages { color: #fde68a; border-color: rgba(251,191,36,0.35); }
-    .c10 .btn-pages:hover { background: rgba(251,191,36,0.15); }
-
-    /* 11: accent-purple (this page) */
-    .c11 .card-bar  { background: linear-gradient(90deg, #7c6af7, #06b6d4); }
-    .c11 .card-glow { background: radial-gradient(ellipse 80% 60% at 10% 10%, rgba(124,106,247,0.18) 0%, transparent 70%); }
-    .c11 .card-icon { background: linear-gradient(135deg, #6d5ce7, #0891b2); }
-    .c11:hover      { box-shadow: 0 20px 60px rgba(0,0,0,0.5), 0 0 0 1px rgba(124,106,247,0.45), inset 0 1px 0 rgba(255,255,255,0.06); }
-    .c11 .btn-pages { color: #c4bbff; border-color: rgba(124,106,247,0.4); }
-    .c11 .btn-pages:hover { background: rgba(124,106,247,0.2); }
-
-    /* ── Section label ── */
-    .section-label {
-      font-size: 0.7rem;
-      font-weight: 700;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      color: var(--text-dim);
-      margin-bottom: 1.4rem;
-      animation: fade-up 0.5s 0.48s ease both;
-    }
-
-    /* ── Footer ── */
     footer {
       text-align: center;
-      padding: 4rem 0 3rem;
-      color: var(--text-dim);
+      margin-top: 3.5rem;
+      color: var(--muted);
       font-size: 0.8rem;
-      animation: fade-up 0.5s 0.9s ease both;
-    }
-    footer a {
-      color: var(--text-dim);
-      text-decoration: none;
-      transition: color 0.2s;
-    }
-    footer a:hover { color: #a89af9; }
-    .sep { margin: 0 0.6rem; opacity: 0.3; }
-
-    /* ── Keyframes ── */
-    @keyframes fade-up {
-      from { opacity: 0; transform: translateY(20px); }
-      to   { opacity: 1; transform: translateY(0); }
     }
 
-    /* staggered card delays */
-    .card:nth-child(1)  { animation-delay: 0.55s; }
-    .card:nth-child(2)  { animation-delay: 0.62s; }
-    .card:nth-child(3)  { animation-delay: 0.69s; }
-    .card:nth-child(4)  { animation-delay: 0.76s; }
-    .card:nth-child(5)  { animation-delay: 0.83s; }
-    .card:nth-child(6)  { animation-delay: 0.90s; }
-    .card:nth-child(7)  { animation-delay: 0.97s; }
-    .card:nth-child(8)  { animation-delay: 1.04s; }
-    .card:nth-child(9)  { animation-delay: 1.11s; }
-    /* last-row cards get their own delays via data attribute */
-    .card[data-delay="10"] { animation-delay: 1.18s; }
-    .card[data-delay="11"] { animation-delay: 1.25s; }
+    footer a { color: var(--accent); text-decoration: none; }
+    footer a:hover { text-decoration: underline; }
   </style>
 </head>
 <body>
 
-<canvas id="starfield"></canvas>
-<div class="nebula"></div>
+<header>
+  <div class="badge">11 Projects</div>
+  <h1>Jason's Dev Hub</h1>
+  <p>11 个 AI 驱动的开发者工具，全部开源</p>
+</header>
 
-<!-- Stats bar -->
-<div class="stats-bar" id="stats-bar">
-  <span>11 个项目</span>
-  <span class="stats-dot">·</span>
-  <span>GitHub Pages</span>
-  <span class="stats-dot">·</span>
-  <span>Claude AI</span>
-</div>
+<main class="grid">
 
-<!-- Setup banner (shown when no ?user= param) -->
-<div id="setup-banner">
-  <span style="opacity:0.85">⚡ 设置 GitHub 用户名激活所有链接</span>
-  <div class="banner-input-wrap">
-    <span style="opacity:0.5;font-size:0.8rem;font-family:monospace">github.com/</span>
-    <input id="username-input" type="text" placeholder="yourusername" autocomplete="off" spellcheck="false">
+  <div class="card">
+    <div class="card-icon">📰</div>
+    <div class="card-name">AI 周刊机器人</div>
+    <div class="card-slug">ai-weekly-digest</div>
+    <div class="card-desc">每周自动抓取技术资讯，生成结构化 AI 周刊</div>
+    <div class="card-actions">
+      <a class="btn btn-primary" href="https://jason1105.github.io/ai-weekly-digest" target="_blank">🚀 访问应用</a>
+      <a class="btn" href="https://github.com/jason1105/ai-weekly-digest" target="_blank">⌥ 查看代码</a>
+    </div>
   </div>
-  <button class="banner-btn" id="username-btn">确认</button>
-</div>
 
-<div class="container">
-
-  <header>
-    <div class="badge">
-      <span class="badge-dot"></span>
-      Claude AI · Personal Dev Lab
+  <div class="card">
+    <div class="card-icon">📡</div>
+    <div class="card-name">技术雷达</div>
+    <div class="card-slug">tech-radar</div>
+    <div class="card-desc">个人技术判断可视化地图，追踪技术趋势</div>
+    <div class="card-actions">
+      <a class="btn btn-primary" href="https://jason1105.github.io/tech-radar" target="_blank">🚀 访问应用</a>
+      <a class="btn" href="https://github.com/jason1105/tech-radar" target="_blank">⌥ 查看代码</a>
     </div>
-    <h1>Dev Lab</h1>
-    <p class="tagline">
-      <em>由 Claude AI 驱动</em> · 11 个自动化工具
-    </p>
-    <div id="user-display">
-      <div class="user-pill" id="user-pill">
-        <span class="user-pill-at">github.com/</span><strong id="user-name"></strong>
-      </div>
+  </div>
+
+  <div class="card">
+    <div class="card-icon">🃏</div>
+    <div class="card-name">代码学习卡片</div>
+    <div class="card-slug">code-learning-cards</div>
+    <div class="card-desc">每日从 Star 仓库生成学习内容，碎片化学习利器</div>
+    <div class="card-actions">
+      <a class="btn btn-primary" href="https://jason1105.github.io/code-learning-cards" target="_blank">🚀 访问应用</a>
+      <a class="btn" href="https://github.com/jason1105/code-learning-cards" target="_blank">⌥ 查看代码</a>
     </div>
-  </header>
+  </div>
 
-  <div class="divider"></div>
+  <div class="card">
+    <div class="card-icon">🪦</div>
+    <div class="card-name">Bug 墓地</div>
+    <div class="card-slug">bug-graveyard</div>
+    <div class="card-desc">Issue 关闭时 Claude 自动生成墓志铭，告别 Bug</div>
+    <div class="card-actions">
+      <a class="btn btn-primary" href="https://jason1105.github.io/bug-graveyard" target="_blank">🚀 访问应用</a>
+      <a class="btn" href="https://github.com/jason1105/bug-graveyard" target="_blank">⌥ 查看代码</a>
+    </div>
+  </div>
 
-  <div class="section-label">全部项目 — All Projects</div>
+  <div class="card">
+    <div class="card-icon">🎭</div>
+    <div class="card-name">代码诗人</div>
+    <div class="card-slug">code-poet</div>
+    <div class="card-desc">每次 commit 触发 Claude 写诗，让代码有温度</div>
+    <div class="card-actions">
+      <a class="btn btn-primary" href="https://jason1105.github.io/code-poet" target="_blank">🚀 访问应用</a>
+      <a class="btn" href="https://github.com/jason1105/code-poet" target="_blank">⌥ 查看代码</a>
+    </div>
+  </div>
 
-  <!-- 3×3 main grid (9 cards) -->
-  <div class="grid" id="main-grid">
+  <div class="card">
+    <div class="card-icon">📄</div>
+    <div class="card-name">简历锻造厂</div>
+    <div class="card-slug">resume-forge</div>
+    <div class="card-desc">从 YAML 自动生成多版本简历，一份数据多种输出</div>
+    <div class="card-actions">
+      <a class="btn btn-primary" href="https://jason1105.github.io/resume-forge" target="_blank">🚀 访问应用</a>
+      <a class="btn" href="https://github.com/jason1105/resume-forge" target="_blank">⌥ 查看代码</a>
+    </div>
+  </div>
 
-    <a class="card c1" data-repo="ai-weekly-digest" href="#" target="_blank" rel="noopener noreferrer">
-      <div class="card-bar"></div>
-      <div class="card-glow"></div>
-      <div class="card-head">
-        <div class="card-icon">🗞️</div>
-        <div class="card-names">
-          <div class="card-name-cn">AI 周刊机器人</div>
-          <div class="card-name-en">ai-weekly-digest</div>
-        </div>
-      </div>
-      <div class="card-desc">每周自动抓取技术资讯，Claude 精选摘要</div>
-      <div class="card-actions">
-        <a class="btn btn-pages" data-type="pages" href="#" target="_blank" rel="noopener" onclick="event.stopPropagation()">🌐 Pages</a>
-        <a class="btn btn-repo"  data-type="repo"  href="#" target="_blank" rel="noopener" onclick="event.stopPropagation()">📦 Repo</a>
-      </div>
-    </a>
+  <div class="card">
+    <div class="card-icon">🎨</div>
+    <div class="card-name">GitHub 活动艺术</div>
+    <div class="card-slug">github-activity-art</div>
+    <div class="card-desc">将贡献数据转化为数字艺术画，数据即创作</div>
+    <div class="card-actions">
+      <a class="btn btn-primary" href="https://jason1105.github.io/github-activity-art" target="_blank">🚀 访问应用</a>
+      <a class="btn" href="https://github.com/jason1105/github-activity-art" target="_blank">⌥ 查看代码</a>
+    </div>
+  </div>
 
-    <a class="card c2" data-repo="tech-radar" href="#" target="_blank" rel="noopener noreferrer">
-      <div class="card-bar"></div>
-      <div class="card-glow"></div>
-      <div class="card-head">
-        <div class="card-icon">🎯</div>
-        <div class="card-names">
-          <div class="card-name-cn">技术雷达</div>
-          <div class="card-name-en">tech-radar</div>
-        </div>
-      </div>
-      <div class="card-desc">个人技术判断可视化地图</div>
-      <div class="card-actions">
-        <a class="btn btn-pages" data-type="pages" href="#" target="_blank" rel="noopener" onclick="event.stopPropagation()">🌐 Pages</a>
-        <a class="btn btn-repo"  data-type="repo"  href="#" target="_blank" rel="noopener" onclick="event.stopPropagation()">📦 Repo</a>
-      </div>
-    </a>
+  <div class="card">
+    <div class="card-icon">🏠</div>
+    <div class="card-name">GitHub 主页增强</div>
+    <div class="card-slug">github-profile-readme</div>
+    <div class="card-desc">自动更新个人主页 README，让 Profile 永远保持鲜活</div>
+    <div class="card-actions">
+      <a class="btn btn-primary" href="https://jason1105.github.io/github-profile-readme" target="_blank">🚀 访问应用</a>
+      <a class="btn" href="https://github.com/jason1105/github-profile-readme" target="_blank">⌥ 查看代码</a>
+    </div>
+  </div>
 
-    <a class="card c3" data-repo="code-learning-cards" href="#" target="_blank" rel="noopener noreferrer">
-      <div class="card-bar"></div>
-      <div class="card-glow"></div>
-      <div class="card-head">
-        <div class="card-icon">📚</div>
-        <div class="card-names">
-          <div class="card-name-cn">代码学习卡片</div>
-          <div class="card-name-en">code-learning-cards</div>
-        </div>
-      </div>
-      <div class="card-desc">每日从 Star 仓库生成学习内容</div>
-      <div class="card-actions">
-        <a class="btn btn-pages" data-type="pages" href="#" target="_blank" rel="noopener" onclick="event.stopPropagation()">🌐 Pages</a>
-        <a class="btn btn-repo"  data-type="repo"  href="#" target="_blank" rel="noopener" onclick="event.stopPropagation()">📦 Repo</a>
-      </div>
-    </a>
+  <div class="card">
+    <div class="card-icon">📝</div>
+    <div class="card-name">Obsidian 博客</div>
+    <div class="card-slug">obsidian-blog</div>
+    <div class="card-desc">Obsidian 笔记一键发布为博客，写作即发布</div>
+    <div class="card-actions">
+      <a class="btn btn-primary" href="https://jason1105.github.io/obsidian-blog" target="_blank">🚀 访问应用</a>
+      <a class="btn" href="https://github.com/jason1105/obsidian-blog" target="_blank">⌥ 查看代码</a>
+    </div>
+  </div>
 
-    <a class="card c4" data-repo="bug-graveyard" href="#" target="_blank" rel="noopener noreferrer">
-      <div class="card-bar"></div>
-      <div class="card-glow"></div>
-      <div class="card-head">
-        <div class="card-icon">🪦</div>
-        <div class="card-names">
-          <div class="card-name-cn">Bug 墓地</div>
-          <div class="card-name-en">bug-graveyard</div>
-        </div>
-      </div>
-      <div class="card-desc">Issue 关闭时 Claude 自动生成墓志铭</div>
-      <div class="card-actions">
-        <a class="btn btn-pages" data-type="pages" href="#" target="_blank" rel="noopener" onclick="event.stopPropagation()">🌐 Pages</a>
-        <a class="btn btn-repo"  data-type="repo"  href="#" target="_blank" rel="noopener" onclick="event.stopPropagation()">📦 Repo</a>
-      </div>
-    </a>
+  <div class="card">
+    <div class="card-icon">🤖</div>
+    <div class="card-name">站会助手</div>
+    <div class="card-slug">standup-bot</div>
+    <div class="card-desc">每日站会自动生成，从 Git 提交到站会报告一步到位</div>
+    <div class="card-actions">
+      <a class="btn btn-primary" href="https://jason1105.github.io/standup-bot" target="_blank">🚀 访问应用</a>
+      <a class="btn" href="https://github.com/jason1105/standup-bot" target="_blank">⌥ 查看代码</a>
+    </div>
+  </div>
 
-    <a class="card c5" data-repo="code-poet" href="#" target="_blank" rel="noopener noreferrer">
-      <div class="card-bar"></div>
-      <div class="card-glow"></div>
-      <div class="card-head">
-        <div class="card-icon">🖋️</div>
-        <div class="card-names">
-          <div class="card-name-cn">代码诗人</div>
-          <div class="card-name-en">code-poet</div>
-        </div>
-      </div>
-      <div class="card-desc">每次 commit 触发 Claude 写诗</div>
-      <div class="card-actions">
-        <a class="btn btn-pages" data-type="pages" href="#" target="_blank" rel="noopener" onclick="event.stopPropagation()">🌐 Pages</a>
-        <a class="btn btn-repo"  data-type="repo"  href="#" target="_blank" rel="noopener" onclick="event.stopPropagation()">📦 Repo</a>
-      </div>
-    </a>
+  <div class="card">
+    <div class="card-icon">🧭</div>
+    <div class="card-name">Dev Hub</div>
+    <div class="card-slug">dev-hub</div>
+    <div class="card-desc">开发者工具导航中心，这里是起点</div>
+    <div class="card-actions">
+      <a class="btn btn-primary" href="https://jason1105.github.io/dev-hub" target="_blank">🚀 本页</a>
+      <a class="btn" href="https://github.com/jason1105/dev-hub" target="_blank">⌥ 查看代码</a>
+    </div>
+  </div>
 
-    <a class="card c6" data-repo="resume-forge" href="#" target="_blank" rel="noopener noreferrer">
-      <div class="card-bar"></div>
-      <div class="card-glow"></div>
-      <div class="card-head">
-        <div class="card-icon">📄</div>
-        <div class="card-names">
-          <div class="card-name-cn">简历锻造厂</div>
-          <div class="card-name-en">resume-forge</div>
-        </div>
-      </div>
-      <div class="card-desc">从 YAML 自动生成多版本简历</div>
-      <div class="card-actions">
-        <a class="btn btn-pages" data-type="pages" href="#" target="_blank" rel="noopener" onclick="event.stopPropagation()">🌐 Pages</a>
-        <a class="btn btn-repo"  data-type="repo"  href="#" target="_blank" rel="noopener" onclick="event.stopPropagation()">📦 Repo</a>
-      </div>
-    </a>
+</main>
 
-    <a class="card c7" data-repo="github-activity-art" href="#" target="_blank" rel="noopener noreferrer">
-      <div class="card-bar"></div>
-      <div class="card-glow"></div>
-      <div class="card-head">
-        <div class="card-icon">🎨</div>
-        <div class="card-names">
-          <div class="card-name-cn">GitHub 艺术</div>
-          <div class="card-name-en">github-activity-art</div>
-        </div>
-      </div>
-      <div class="card-desc">贡献数据生成数字艺术画</div>
-      <div class="card-actions">
-        <a class="btn btn-pages" data-type="pages" href="#" target="_blank" rel="noopener" onclick="event.stopPropagation()">🌐 Pages</a>
-        <a class="btn btn-repo"  data-type="repo"  href="#" target="_blank" rel="noopener" onclick="event.stopPropagation()">📦 Repo</a>
-      </div>
-    </a>
-
-    <a class="card c8" data-repo="github-profile-readme" href="#" target="_blank" rel="noopener noreferrer">
-      <div class="card-bar"></div>
-      <div class="card-glow"></div>
-      <div class="card-head">
-        <div class="card-icon">👤</div>
-        <div class="card-names">
-          <div class="card-name-cn">GitHub 主页</div>
-          <div class="card-name-en">github-profile-readme</div>
-        </div>
-      </div>
-      <div class="card-desc">自动更新的 GitHub 个人主页</div>
-      <div class="card-actions">
-        <a class="btn btn-pages" data-type="pages" href="#" target="_blank" rel="noopener" onclick="event.stopPropagation()">🌐 Pages</a>
-        <a class="btn btn-repo"  data-type="repo"  href="#" target="_blank" rel="noopener" onclick="event.stopPropagation()">📦 Repo</a>
-      </div>
-    </a>
-
-    <a class="card c9" data-repo="obsidian-blog" href="#" target="_blank" rel="noopener noreferrer">
-      <div class="card-bar"></div>
-      <div class="card-glow"></div>
-      <div class="card-head">
-        <div class="card-icon">📝</div>
-        <div class="card-names">
-          <div class="card-name-cn">Obsidian 博客</div>
-          <div class="card-name-en">obsidian-blog</div>
-        </div>
-      </div>
-      <div class="card-desc">Obsidian 笔记一键发布为博客</div>
-      <div class="card-actions">
-        <a class="btn btn-pages" data-type="pages" href="#" target="_blank" rel="noopener" onclick="event.stopPropagation()">🌐 Pages</a>
-        <a class="btn btn-repo"  data-type="repo"  href="#" target="_blank" rel="noopener" onclick="event.stopPropagation()">📦 Repo</a>
-      </div>
-    </a>
-
-  </div><!-- /main-grid -->
-
-  <!-- Last row: 2 cards centered -->
-  <div class="grid-last-row" style="margin-top:1.3rem">
-
-    <a class="card c10" data-delay="10" data-repo="standup-bot" href="#" target="_blank" rel="noopener noreferrer">
-      <div class="card-bar"></div>
-      <div class="card-glow"></div>
-      <div class="card-head">
-        <div class="card-icon">☕</div>
-        <div class="card-names">
-          <div class="card-name-cn">站会助手</div>
-          <div class="card-name-en">standup-bot</div>
-        </div>
-      </div>
-      <div class="card-desc">每日站会自动生成</div>
-      <div class="card-actions">
-        <a class="btn btn-pages" data-type="pages" href="#" target="_blank" rel="noopener" onclick="event.stopPropagation()">🌐 Pages</a>
-        <a class="btn btn-repo"  data-type="repo"  href="#" target="_blank" rel="noopener" onclick="event.stopPropagation()">📦 Repo</a>
-      </div>
-    </a>
-
-    <a class="card c11" data-delay="11" data-repo="dev-hub" href="#" target="_blank" rel="noopener noreferrer">
-      <div class="card-bar"></div>
-      <div class="card-glow"></div>
-      <div class="card-head">
-        <div class="card-icon">🏠</div>
-        <div class="card-names">
-          <div class="card-name-cn">导航中心</div>
-          <div class="card-name-en">dev-hub</div>
-        </div>
-      </div>
-      <div class="card-desc">本页面 — 所有项目的统一入口</div>
-      <div class="card-actions">
-        <a class="btn btn-pages" data-type="pages" href="#" target="_blank" rel="noopener" onclick="event.stopPropagation()">🌐 Pages</a>
-        <a class="btn btn-repo"  data-type="repo"  href="#" target="_blank" rel="noopener" onclick="event.stopPropagation()">📦 Repo</a>
-      </div>
-    </a>
-
-  </div><!-- /grid-last-row -->
-
-  <footer>
-    <span>Built with ❤️ and Claude AI</span>
-    <span class="sep">·</span>
-    <a id="footer-gh-link" href="https://github.com" target="_blank" rel="noopener">GitHub</a>
-    <span class="sep">·</span>
-    <span id="footer-year"></span>
-  </footer>
-
-</div><!-- /container -->
-
-<script>
-// ─────────────────────────────────────────────────────────
-// STARFIELD — 3 parallax depth layers
-// ─────────────────────────────────────────────────────────
-;(function () {
-  const canvas = document.getElementById('starfield');
-  const ctx    = canvas.getContext('2d');
-  let stars = [], W = 0, H = 0;
-
-  const LAYERS = [
-    { count: 80,  speed: 0.006, rMin: 0.15, rMax: 0.8,  alphaMin: 0.1, alphaMax: 0.35 }, // far
-    { count: 80,  speed: 0.012, rMin: 0.5,  rMax: 1.2,  alphaMin: 0.2, alphaMax: 0.55 }, // mid
-    { count: 40,  speed: 0.022, rMin: 0.9,  rMax: 1.8,  alphaMin: 0.4, alphaMax: 0.85 }, // near
-  ];
-
-  function rand(a, b) { return a + Math.random() * (b - a); }
-
-  function resize() {
-    W = canvas.width  = window.innerWidth;
-    H = canvas.height = window.innerHeight;
-  }
-
-  function spawn() {
-    stars = [];
-    LAYERS.forEach((layer, li) => {
-      for (let i = 0; i < layer.count; i++) {
-        stars.push({
-          x:     rand(0, W),
-          y:     rand(0, H),
-          r:     rand(layer.rMin, layer.rMax),
-          vx:    (Math.random() - 0.5) * layer.speed,
-          vy:    rand(0.005, 0.015) * layer.speed * 60,
-          base:  rand(layer.alphaMin, layer.alphaMax),
-          phase: rand(0, Math.PI * 2),
-          freq:  rand(0.4, 1.2),
-          layer: li,
-          color: Math.random() > 0.85 ? '200,230,255' : Math.random() > 0.7 ? '220,200,255' : '210,220,255',
-        });
-      }
-    });
-  }
-
-  let raf;
-  function frame(ts) {
-    ctx.clearRect(0, 0, W, H);
-    const t = ts * 0.001;
-    for (const s of stars) {
-      const layer = LAYERS[s.layer];
-      const twinkle = 0.6 + 0.4 * Math.sin(s.phase + t * s.freq);
-      const alpha = s.base * twinkle;
-      ctx.beginPath();
-      ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
-      ctx.fillStyle = `rgba(${s.color},${alpha})`;
-      ctx.fill();
-      s.x += s.vx;
-      s.y += s.vy;
-      if (s.x < -2) s.x = W + 2;
-      if (s.x > W + 2) s.x = -2;
-      if (s.y > H + 2) s.y = -2;
-      if (s.y < -2) s.y = H + 2;
-    }
-    raf = requestAnimationFrame(frame);
-  }
-
-  window.addEventListener('resize', () => { resize(); spawn(); });
-  resize(); spawn();
-  requestAnimationFrame(frame);
-})();
-
-// ─────────────────────────────────────────────────────────
-// USERNAME & LINK INJECTION
-// ─────────────────────────────────────────────────────────
-;(function () {
-  const params = new URLSearchParams(window.location.search);
-  let user = (params.get('user') || '').trim();
-
-  function applyUser(u) {
-    // patch all card hrefs (card itself)
-    document.querySelectorAll('.card[data-repo]').forEach(card => {
-      const repo = card.dataset.repo;
-      card.href = `https://${u}.github.io/${repo}`;
-      card.querySelectorAll('.btn[data-type="pages"]').forEach(btn => {
-        btn.href = `https://${u}.github.io/${repo}`;
-      });
-      card.querySelectorAll('.btn[data-type="repo"]').forEach(btn => {
-        btn.href = `https://github.com/${u}/${repo}`;
-      });
-    });
-
-    // user pill
-    document.getElementById('user-name').textContent = u;
-    document.getElementById('user-pill').classList.add('visible');
-
-    // footer
-    const fgl = document.getElementById('footer-gh-link');
-    fgl.href = `https://github.com/${u}`;
-    fgl.textContent = `github.com/${u}`;
-
-    // title
-    document.title = `${u} · Dev Lab`;
-  }
-
-  function setUserAndRedirect(u) {
-    u = u.trim();
-    if (!u) return;
-    const url = new URL(window.location.href);
-    url.searchParams.set('user', u);
-    window.location.href = url.toString();
-  }
-
-  // Footer year
-  document.getElementById('footer-year').textContent = new Date().getFullYear();
-
-  if (user) {
-    applyUser(user);
-    // hide banner, keep stats at top:0
-    const banner = document.getElementById('setup-banner');
-    banner.style.display = 'none';
-  } else {
-    // show banner
-    const banner = document.getElementById('setup-banner');
-    banner.classList.add('visible');
-    document.querySelector('.stats-bar').classList.add('pushed');
-    document.querySelector('.container').style.paddingTop = '0';
-    document.querySelector('header').style.paddingTop = '9rem';
-
-    document.getElementById('username-btn').addEventListener('click', () => {
-      const val = document.getElementById('username-input').value;
-      setUserAndRedirect(val);
-    });
-    document.getElementById('username-input').addEventListener('keydown', e => {
-      if (e.key === 'Enter') {
-        setUserAndRedirect(e.target.value);
-      }
-    });
-  }
-})();
-</script>
+<footer>
+  <p>Built with ❤️ by <a href="https://github.com/jason1105" target="_blank">@jason1105</a> · Powered by Claude AI</p>
+</footer>
 
 </body>
 </html>

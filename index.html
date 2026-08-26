@@ -107,6 +107,27 @@
       font-family: "SFMono-Regular", Consolas, monospace;
     }
 
+    /* 运行状态徽章（活仪表盘） */
+    .status-pill {
+      display: inline-flex; align-items: center; gap: 5px;
+      font-size: 0.7rem; padding: 2px 8px; border-radius: 10px;
+      font-family: "SFMono-Regular", Consolas, monospace;
+      margin-top: 4px; border: 1px solid var(--border);
+      color: var(--muted); background: var(--btn-bg);
+      transition: opacity .2s;
+    }
+    .status-pill .dot {
+      width: 7px; height: 7px; border-radius: 50%;
+      background: var(--muted); flex: none;
+    }
+    .status-pill.ok    { color: var(--green); border-color: #23863633; }
+    .status-pill.ok    .dot { background: var(--green); }
+    .status-pill.fail  { color: #f85149; border-color: #f8514933; }
+    .status-pill.fail  .dot { background: #f85149; }
+    .status-pill.na    { opacity: .6; }
+    .status-pill.loading .dot { animation: pulse 1s ease-in-out infinite; }
+    @keyframes pulse { 0%,100%{opacity:.3} 50%{opacity:1} }
+
     .card-desc {
       font-size: 0.875rem;
       color: var(--muted);
@@ -173,6 +194,7 @@
     <div class="card-icon">📰</div>
     <div class="card-name">AI 周刊机器人</div>
     <div class="card-slug">ai-weekly-digest</div>
+    <div class="status-pill loading" data-slug="ai-weekly-digest"><span class="dot"></span><span class="txt">检查中…</span></div>
     <div class="card-desc">每周自动抓取技术资讯，生成结构化 AI 周刊</div>
     <div class="card-actions">
       <a class="btn btn-primary" href="https://jason1105.github.io/ai-weekly-digest" target="_blank">🚀 访问应用</a>
@@ -184,6 +206,7 @@
     <div class="card-icon">📡</div>
     <div class="card-name">技术雷达</div>
     <div class="card-slug">tech-radar</div>
+    <div class="status-pill loading" data-slug="tech-radar"><span class="dot"></span><span class="txt">检查中…</span></div>
     <div class="card-desc">个人技术判断可视化地图，追踪技术趋势</div>
     <div class="card-actions">
       <a class="btn btn-primary" href="https://jason1105.github.io/tech-radar" target="_blank">🚀 访问应用</a>
@@ -195,6 +218,7 @@
     <div class="card-icon">🃏</div>
     <div class="card-name">代码学习卡片</div>
     <div class="card-slug">code-learning-cards</div>
+    <div class="status-pill loading" data-slug="code-learning-cards"><span class="dot"></span><span class="txt">检查中…</span></div>
     <div class="card-desc">每日从 Star 仓库生成学习内容，碎片化学习利器</div>
     <div class="card-actions">
       <a class="btn btn-primary" href="https://jason1105.github.io/code-learning-cards" target="_blank">🚀 访问应用</a>
@@ -206,6 +230,7 @@
     <div class="card-icon">🪦</div>
     <div class="card-name">Bug 墓地</div>
     <div class="card-slug">bug-graveyard</div>
+    <div class="status-pill loading" data-slug="bug-graveyard"><span class="dot"></span><span class="txt">检查中…</span></div>
     <div class="card-desc">Issue 关闭时 Claude 自动生成墓志铭，告别 Bug</div>
     <div class="card-actions">
       <a class="btn btn-primary" href="https://jason1105.github.io/bug-graveyard" target="_blank">🚀 访问应用</a>
@@ -217,6 +242,7 @@
     <div class="card-icon">🎭</div>
     <div class="card-name">代码诗人</div>
     <div class="card-slug">code-poet</div>
+    <div class="status-pill loading" data-slug="code-poet"><span class="dot"></span><span class="txt">检查中…</span></div>
     <div class="card-desc">每次 commit 触发 Claude 写诗，让代码有温度</div>
     <div class="card-actions">
       <a class="btn btn-primary" href="https://jason1105.github.io/code-poet" target="_blank">🚀 访问应用</a>
@@ -228,6 +254,7 @@
     <div class="card-icon">📄</div>
     <div class="card-name">简历锻造厂</div>
     <div class="card-slug">resume-forge</div>
+    <div class="status-pill loading" data-slug="resume-forge"><span class="dot"></span><span class="txt">检查中…</span></div>
     <div class="card-desc">从 YAML 自动生成多版本简历，一份数据多种输出</div>
     <div class="card-actions">
       <a class="btn btn-primary" href="https://jason1105.github.io/resume-forge" target="_blank">🚀 访问应用</a>
@@ -239,6 +266,7 @@
     <div class="card-icon">🎨</div>
     <div class="card-name">GitHub 活动艺术</div>
     <div class="card-slug">github-activity-art</div>
+    <div class="status-pill loading" data-slug="github-activity-art"><span class="dot"></span><span class="txt">检查中…</span></div>
     <div class="card-desc">将贡献数据转化为数字艺术画，数据即创作</div>
     <div class="card-actions">
       <a class="btn btn-primary" href="https://jason1105.github.io/github-activity-art" target="_blank">🚀 访问应用</a>
@@ -250,6 +278,7 @@
     <div class="card-icon">🏠</div>
     <div class="card-name">GitHub 主页增强</div>
     <div class="card-slug">jason1105</div>
+    <div class="status-pill loading" data-slug="jason1105"><span class="dot"></span><span class="txt">检查中…</span></div>
     <div class="card-desc">自动更新个人主页 README，让 Profile 永远保持鲜活</div>
     <div class="card-actions">
       <a class="btn btn-primary" href="https://jason1105.github.io" target="_blank">🚀 访问应用</a>
@@ -261,6 +290,7 @@
     <div class="card-icon">📝</div>
     <div class="card-name">Obsidian 博客</div>
     <div class="card-slug">obsidian-blog</div>
+    <div class="status-pill loading" data-slug="obsidian-blog"><span class="dot"></span><span class="txt">检查中…</span></div>
     <div class="card-desc">Obsidian 笔记一键发布为博客，写作即发布</div>
     <div class="card-actions">
       <a class="btn btn-primary" href="https://jason1105.github.io/obsidian-blog" target="_blank">🚀 访问应用</a>
@@ -272,6 +302,7 @@
     <div class="card-icon">🤖</div>
     <div class="card-name">站会助手</div>
     <div class="card-slug">standup-bot</div>
+    <div class="status-pill loading" data-slug="standup-bot"><span class="dot"></span><span class="txt">检查中…</span></div>
     <div class="card-desc">每日站会自动生成，从 Git 提交到站会报告一步到位</div>
     <div class="card-actions">
       <a class="btn btn-primary" href="https://jason1105.github.io/standup-bot" target="_blank">🚀 访问应用</a>
@@ -283,6 +314,7 @@
     <div class="card-icon">🧭</div>
     <div class="card-name">Dev Hub</div>
     <div class="card-slug">dev-hub</div>
+    <div class="status-pill loading" data-slug="dev-hub"><span class="dot"></span><span class="txt">检查中…</span></div>
     <div class="card-desc">开发者工具导航中心，这里是起点</div>
     <div class="card-actions">
       <a class="btn btn-primary" href="https://jason1105.github.io/dev-hub" target="_blank">🚀 本页</a>
@@ -294,6 +326,7 @@
     <div class="card-icon">🎯</div>
     <div class="card-name">每日面试题</div>
     <div class="card-slug">interview-daily</div>
+    <div class="status-pill loading" data-slug="interview-daily"><span class="dot"></span><span class="txt">检查中…</span></div>
     <div class="card-desc">精选热门技术岗位面试题，附完整拆解，每天 08:00 自动更新</div>
     <div class="card-actions">
       <a class="btn btn-primary" href="https://jason1105.github.io/interview-daily" target="_blank">🚀 访问应用</a>
@@ -302,6 +335,45 @@
   </div>
 
 </main>
+
+<script>
+  // 活仪表盘：读取每个仓库最近一次 Actions 运行状态（公开 API，无需鉴权）
+  const OWNER = "jason1105";
+  function rel(ts) {
+    if (!ts) return "";
+    const d = (Date.now() - new Date(ts)) / 1000;
+    if (d < 60) return "刚刚";
+    if (d < 3600) return Math.floor(d/60) + " 分钟前";
+    if (d < 86400) return Math.floor(d/3600) + " 小时前";
+    return Math.floor(d/86400) + " 天前";
+  }
+  async function loadStatus(pill) {
+    const slug = pill.dataset.slug;
+    try {
+      const r = await fetch(`https://api.github.com/repos/${OWNER}/${slug}/actions/runs?per_page=1&exclude_pull_requests=true`);
+      if (!r.ok) throw new Error(r.status);
+      const data = await r.json();
+      const run = (data.workflow_runs || [])[0];
+      pill.classList.remove("loading");
+      const txt = pill.querySelector(".txt");
+      if (!run) { pill.classList.add("na"); txt.textContent = "尚无运行"; return; }
+      const concl = run.conclusion; // success / failure / null(进行中)
+      if (concl === "success") { pill.classList.add("ok"); txt.textContent = "正常 · " + rel(run.updated_at); }
+      else if (concl === null) { txt.textContent = "运行中…"; }
+      else { pill.classList.add("fail"); txt.textContent = "失败 · " + rel(run.updated_at); }
+    } catch (e) {
+      pill.classList.remove("loading"); pill.classList.add("na");
+      pill.querySelector(".txt").textContent = "状态不可用";
+    }
+  }
+  // 串行拉取，避免瞬间打满 API 速率
+  (async () => {
+    for (const pill of document.querySelectorAll(".status-pill")) {
+      await loadStatus(pill);
+    }
+  })();
+</script>
+
 
 <footer>
   <p>Built with ❤️ by <a href="https://github.com/jason1105" target="_blank">@jason1105</a> · Powered by Claude AI · 12 projects</p>

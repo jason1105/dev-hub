@@ -125,6 +125,8 @@
     .status-pill.fail  { color: #f85149; border-color: #f8514933; }
     .status-pill.fail  .dot { background: #f85149; }
     .status-pill.na    { opacity: .6; }
+    .status-pill.ext   { color: var(--green); border-color: #23863633; }
+    .status-pill.ext   .dot { background: var(--green); }
     .status-pill.loading .dot { animation: pulse 1s ease-in-out infinite; }
     @keyframes pulse { 0%,100%{opacity:.3} 50%{opacity:1} }
 
@@ -346,6 +348,18 @@
     </div>
   </div>
 
+  <div class="card">
+    <div class="card-icon">🏷️</div>
+    <div class="card-name">GitLab 编号显示</div>
+    <div class="card-slug">chrome-show-issue-and-mr-no</div>
+    <div class="status-pill ext"><span class="dot"></span><span class="txt">Chrome 扩展 · 已上架</span></div>
+    <div class="card-desc">在 GitLab 页面上直接显示 issue / MR 编号，支持自建 GitLab 实例</div>
+    <div class="card-actions">
+      <a class="btn btn-primary" href="https://chromewebstore.google.com/detail/gitlab-issuemr-number-pin/dmkkdfokknoilapcghjnncnehagcnfcc" target="_blank">🧩 安装扩展</a>
+      <a class="btn" href="https://github.com/jason1105/chrome-show-issue-and-mr-no" target="_blank">⌥ 查看代码</a>
+    </div>
+  </div>
+
 </main>
 
 <script>
@@ -380,7 +394,7 @@
   }
   // 串行拉取，避免瞬间打满 API 速率
   (async () => {
-    for (const pill of document.querySelectorAll(".status-pill")) {
+    for (const pill of document.querySelectorAll(".status-pill[data-slug]")) {
       await loadStatus(pill);
     }
   })();
@@ -388,7 +402,7 @@
 
 
 <footer>
-  <p>Built with ❤️ by <a href="https://github.com/jason1105" target="_blank">@jason1105</a> · Powered by Claude AI · 12 projects</p>
+  <p>Built with ❤️ by <a href="https://github.com/jason1105" target="_blank">@jason1105</a> · Powered by Claude AI · 13 projects</p>
 </footer>
 
 </body>
